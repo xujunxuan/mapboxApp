@@ -12,9 +12,9 @@
 <body>
 
 <div id='map'></div>
-<ul id="buttons">
+<!-- <ul id="buttons">
     <li id='button-fr' class='button'>点击</li>
-</ul>
+</ul> -->
 
 <script>
 var mapinfo={};
@@ -69,14 +69,14 @@ function polling(cb){
             var arr= JSON.parse(data);
             for(var i= 0;i<arr.length;i++){
                 let obj=arr[i];
-                if (y!= arr[i].lat || x != arr[i].lon){
+                // if (y!= arr[i].lat || x != arr[i].lon){
                 		console.log(x1+"||"+y1);
                     x1 = x;
                     y1 = y;
                     y = arr[i].lat;
                     x = arr[i].lon;
                     cb(0);
-                }
+                // }
              console.info("x"+arr[i].lat+"||y"+arr[i].lon);
             }
            }
@@ -189,7 +189,7 @@ map.on('load', function () {
 
 
 var changeMap=function(n){
-    var map = new mapboxgl.Map(mapinfo[1]);
+    map = new mapboxgl.Map(mapinfo[n]);
     x=null;
     y=null;
 }
