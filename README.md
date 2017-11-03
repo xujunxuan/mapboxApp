@@ -3,48 +3,16 @@
 ## peoject structure
 ```
 │  README.md
-│  
-├─wandaMap
-│  │  movesuccess.html
-│  │  
-│  ├─backend
-│  │      infolite.php
-│  │      
-│  ├─css
-│  │      style.css
-│  │      
-│  └─js
-│          mapbox-gl.js
-│          require.js
-│          
-├─zjWanDa1F
-│  │  infolite.php
-│  │  movesuccess.html
-│  │  package.json
-│  │  pos.txt
-│  │  
-│  └─js
-│          mapbox-gl.js
-│          require.js
-│          
-├─zjWanDa2F
-│  │  infolite.php
-│  │  mapboxurl.txt
-│  │  movesuccess.html
-│  │  package.json
-│  │  pos.txt
-│  │  
-│  └─js
-│          mapbox-gl.js
-│          require.js
-│          
-└─zjWanDa3F
-    │  infolite.php
-    │  mapboxurl.txt
+│
+└─wandaMap
     │  movesuccess.html
-    │  package.json
-    │  pos.txt
-    │  
+    │
+    ├─backend
+    │      infolite.php
+    │
+    ├─css
+    │      style.css
+    │
     └─js
             mapbox-gl.js
             require.js
