@@ -60,7 +60,8 @@ var posStack=[];
 //默认从map1开始
 var hnow=1;
 var map = new mapboxgl.Map(mapinfo[hnow]);
-
+//时间戳
+var _TIMESTAMP=null;
 //轮询请求最新点信息
 function polling(cb,ts){
         $.ajax({
@@ -121,24 +122,6 @@ map.on('load', function () {
     function animateMarker(h) {
         // Update the data to a new position based on the animation timestamp. The
         // divisor in the expression `timestamp / 1000` controls the animation speed.
-
-/*
-        if(timestamp != 0)
-        {
-            if(flag == 0)
-            {
-                timestamptemp = timestamp;
-                flag = 1;
-            }
-            else{
-                //map.getSource('point').setData(pointMove(x1,y1 + (timestamp - timestamptemp)/1000*0.00001));
-                if(timestamp - timestamptemp < 1000)
-                {
-                    map.getSource('point').setData(pointMove(x1+(timestamp - timestamptemp)/1000*(x-x1),y1+(timestamp - timestamptemp)/1000*(y-y1)));
-                }
-            }
-        }
-*/
         var timestamp = new Date().getTime();
 
 
@@ -171,7 +154,6 @@ map.on('load', function () {
             }
 
         }
-
         
 
         // Request the next frame of the animation.
@@ -183,15 +165,6 @@ map.on('load', function () {
         polling(animateMarker);
     },1100);//polling interval>1.03s
 
-
-
-    // Start the animation.
-    //animateMarker(0);
-
-//     document.getElementById('button-fr').addEventListener('click', function(event) {
-//     //alert('djg');
-//     animateMarker(0);
-// });
 });
 
 
