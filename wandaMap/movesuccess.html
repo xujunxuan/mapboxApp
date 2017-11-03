@@ -86,15 +86,14 @@ function pointMove(x,y) {
        return {
         "type": "Point",
         "coordinates": [
-           x,//114.35024410486221,
-             y//       30.528976379032812
+           x,
+           y
         ]
     };
 }
 
 map.on('load', function () {
     // Add a source and layer displaying a point which will be animated in a circle.
-    // 
     console.log("on load");
     map.addSource('point', {
         "type": "geojson",
@@ -190,9 +189,9 @@ map.on('load', function () {
 
 var changeMap=function(n){
     var map = new mapboxgl.Map(mapinfo[1]);
+    x=null;
+    y=null;
 }
-
-
 </script>
 
 </body>
