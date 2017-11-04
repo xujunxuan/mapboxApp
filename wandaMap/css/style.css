@@ -1,21 +1,63 @@
 body { margin:0; padding:0; }
-#map { position:absolute; top:0; bottom:0; width:100%; }
-#buttons {
-    width: 90%;
-    margin: 0 auto;
+ul{list-style: none;}
+ul,li{
+    margin:0;
+    padding:0;
 }
-.button {
+
+#map { position:absolute; top:0; bottom:0; width:100%; }
+
+
+.abs{
+    position:fixed;
+    right:0;
+    bottom:0;
+}
+
+.tagbar{
+
+    z-index:1000;
+}
+
+@media (max-width: 720px) {  
+    .tagbar{
+
+        z-index:1000;
+    }
+}         
+
+
+
+.btn {
     display: inline-block;
-    position: relative;
-    cursor: pointer;
-    width: 20%;
-    padding: 8px;
-    border-radius: 3px;
-    margin-top: 10px;
-    font-size: 12px;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
     text-align: center;
-    color: #fff;
-    background: #ee8a65;
-    font-family: sans-serif;
-    font-weight: bold;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.btn-default {
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+}
+
+.btn.active{
+    background-color:#007cbf;
+    color:#fff;
+    border-color:#006caf;
 }

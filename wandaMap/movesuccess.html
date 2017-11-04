@@ -16,6 +16,10 @@
     <li id='button-fr' class='button'>点击</li>
 </ul> -->
 
+<ul id="tags" class="tagbar abs">
+
+</ul>
+
 <script>
 var mapinfo={};
 mapinfo[0]={
@@ -46,6 +50,15 @@ mapinfo[2]={
     pitch: 60
 }
 
+var mapname={}
+mapname[0]="1 F";
+mapname[1]="2 F";
+mapname[2]="3 F";
+
+for(var i in mapname){
+    $("#tags").prepend('<li><button type="button" class="btn btn-default" fnum="'+i+'">'+mapname[i]+'</button></li>');
+}
+
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiZXpyb2FkIiwiYSI6ImNqNjc1NHc3czAxcHYyeHJ5dnE3c21xM2oifQ.HxJTd0na3DENxYr2rGXfWw';
 //读取到的坐标
@@ -62,6 +75,9 @@ var hnow=0;
 var map = new mapboxgl.Map(mapinfo[hnow]);
 //时间戳
 var _TIMESTAMP=null;
+
+$('button[fnum="'+ hnow +'"]').addClass('active');
+
 //轮询请求最新点信息
 function polling(cb,ts){
         $.ajax({
@@ -177,10 +193,13 @@ map.on('load', function () {
 //     y=null;
 // }
 function changeMap(n){
+    $("#map").html("");
     map = new mapboxgl.Map(mapinfo[n]);
     x=null;
     y=null;
     hnow=n;
+    $('button[fnum]').removeClass('active');
+    $('button[fnum="'+ n +'"]').addClass('active');
 }
 </script>
 
