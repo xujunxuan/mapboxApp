@@ -18,10 +18,19 @@
 
 <script>
 var mapinfo={};
+mapinfo[0]={
+    container: 'map', // container id
+    style: 'mapbox://styles/ezroad/cj6rj02se4ian2qr0csjn0hnq', // stylesheet location
+    center: [114.35024410486221, 30.528976379032812], // starting position [lng, lat]
+    zoom: 19, // starting zoom
+    bearing: -30,
+    hash: false,
+    pitch: 60
+}
 mapinfo[1]={
     container: 'map', // container id
-    style: 'mapbox://styles/ezroad/cj9cpr26b5glr2sp83gvzitgz', // stylesheet location
-    center: [119.671206, 29.092635], // starting position [lng, lat]
+    style: 'mapbox://styles/ezroad/cj9lbq3t71hgf2rqfo0bopwey',  // stylesheet location
+    center: [114.35024410486221, 30.528976379032812], // starting position [lng, lat]
     zoom: 19, // starting zoom
     bearing: -30,
     hash: false,
@@ -29,17 +38,8 @@ mapinfo[1]={
 }
 mapinfo[2]={
     container: 'map', // container id
-    style: 'mapbox://styles/ezroad/cj9csxk1p5jvz2spikir9plox', // stylesheet location
-    center: [119.671533, 29.092709], // starting position [lng, lat]
-    zoom: 19, // starting zoom
-    bearing: -30,
-    hash: false,
-    pitch: 60
-}
-mapinfo[3]={
-    container: 'map', // container id
-    style: 'mapbox://styles/ezroad/cj9dld9f06b1f2ro3p5f87oli', // stylesheet location
-    center: [119.671130, 29.092542], // starting position [lng, lat]
+    style: 'mapbox://styles/ezroad/cj6rj02se4ian2qr0csjn0hnq', // stylesheet location
+    center: [114.35024410486221, 30.528976379032812], // starting position [lng, lat]
     zoom: 19, // starting zoom
     bearing: -30,
     hash: false,
@@ -49,16 +49,16 @@ mapinfo[3]={
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiZXpyb2FkIiwiYSI6ImNqNjc1NHc3czAxcHYyeHJ5dnE3c21xM2oifQ.HxJTd0na3DENxYr2rGXfWw';
 //读取到的坐标
-var x = 119.671349;
-var y = 29.092620;
+var x = 114.35024410486221;
+var y = 30.528886379032810;
 //初始位置
-var x1 = 119.671206;
-var y1 = 29.092635
+var x1 = 114.35024410486221;
+var y1 = 30.528976379032812;
 
 var posStack=[];
 //var pos={timestamp:"",x:"",y:""}
 //默认从map1开始
-var hnow=1;
+var hnow=0;
 var map = new mapboxgl.Map(mapinfo[hnow]);
 //时间戳
 var _TIMESTAMP=null;
@@ -101,7 +101,7 @@ map.on('load', function () {
     console.log("on load");
     map.addSource('point', {
         "type": "geojson",
-        "data": pointMove(119.671206,29.092635)
+        "data": pointMove(114.35024410486221,30.528976379032812)
     });
 
     map.addLayer({
@@ -171,7 +171,12 @@ map.on('load', function () {
 
 
 
-var changeMap=function(n){
+// var changeMap=function(n){
+//     map = new mapboxgl.Map(mapinfo[n]);
+//     x=null;
+//     y=null;
+// }
+function changeMap(n){
     map = new mapboxgl.Map(mapinfo[n]);
     x=null;
     y=null;
