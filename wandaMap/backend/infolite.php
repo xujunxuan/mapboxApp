@@ -10,7 +10,7 @@
 		* @return int
 		*/
 		$tbname="pos";//coordinate
-		$mysqli = new mysqli("localhost", "root", "root", "zhejiang");
+		$mysqli = new mysqli("localhost", "root", "root", "shanxi");
 
 		$result_json;
 		$result_array=array();
