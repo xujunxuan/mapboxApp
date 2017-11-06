@@ -59,6 +59,13 @@ for(var i in mapname){
     $("#tags").prepend('<li><button type="button" class="btn btn-default" fnum="'+i+'">'+mapname[i]+'</button></li>');
 }
 
+$("button[fnum]").click(function(){
+    var mapId=$(this).attr("fnum");
+    console.info(mapId);
+    changeMap(mapId);
+    console.info("||"+mapId);
+})
+
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiZXpyb2FkIiwiYSI6ImNqNjc1NHc3czAxcHYyeHJ5dnE3c21xM2oifQ.HxJTd0na3DENxYr2rGXfWw';
 //读取到的坐标
@@ -142,9 +149,9 @@ map.on('load', function () {
 
 
 
-        if(h!=hnow&&mapinfo[h]!=undefined){
-            changeMap(h);
-        }
+        // if(h!=hnow&&mapinfo[h]!=undefined){
+        //     changeMap(h);
+        // }
         if(map.getSource('point')!=undefined){
             map.getSource('point').setData(pointMove(x,y));            
         }
