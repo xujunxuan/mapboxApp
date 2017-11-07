@@ -156,7 +156,7 @@ var myjson={
                     "type": "Feature",
                     "geometry": {
                         "type": "Point",
-                        "coordinates": [114.35024410486221,30.528976379032812]
+                        "coordinates": [114.35003,30.5289]
                     },
                     "properties": {
                         "title": "Client 1"
@@ -165,7 +165,7 @@ var myjson={
                     "type": "Feature",
                     "geometry": {
                         "type": "Point",
-                        "coordinates": [114.35003,30.5289]
+                        "coordinates": [114.3501,30.52902]
                     },
                     "properties": {
                         "title": "Client 2"
@@ -206,13 +206,13 @@ var updatePoints=function(arr){
 var pandlMove=function(obj){
     if(obj["name"]!=undefined){
         if(map.getSource('point'+obj["name"])!=undefined){
-            map.getSource('point'+obj["name"]).setData(pointMove(x,y));            
+            map.getSource('point'+obj["name"]).setData(pointMove(obj['lon'],obj['lat']));            
         }
         else{
             if(map!=undefined){
                 map.addSource('point'+obj["name"], {
                     "type": "geojson",
-                    "data": pointMove(x,y)
+                    "data": pointMove(obj['lon'],obj['lat'])
                 });
 
                 map.addLayer({
@@ -247,8 +247,8 @@ var pandlInit=function(){
     //         "circle-color": "#007cbf"
     //     }
     // });
-    pandlMove(114.35024410486221,30.528976379032812);
-    pandlMove((114.35020410486221,30.528876379032812))
+    pandlMove({"name":1,"temp":1,"lat":30.5289,"lon":114.35003,"h":0})
+    pandlMove({"name":2,"temp":1,"lat":30.52902,"lon":114.3501,"h":0})
     map.addSource('labels', myjson);
     map.addLayer({
         "id": "labels",
@@ -289,14 +289,14 @@ var jsonToLabels=function(arr){
             }
         }
         var xyarr=[];
-        xyarr.push(obj.lat);
         xyarr.push(obj.lon);
+        xyarr.push(obj.lat);
         tmpfObj["geometry"]["coordinates"]=xyarr;
-        tmpfObj["properties"]["title"]="Client"+obj.name
+        tmpfObj["properties"]["title"]="Client"+obj.name+":"+mapname[obj.h];
         tempFeatures.push(tmpfObj)
 
     }
-    console.info(tempFeatures);
+    // console.info(tempFeatures);
     return tempFeatures;
 }
 
