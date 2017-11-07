@@ -5,16 +5,13 @@
     <title>易得路位置信息查看系统</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.29.0/mapbox-gl.js' charset=”utf-8″></script>
-    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.29.0/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.41.0/mapbox-gl.js' charset=”utf-8″></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.41.0/mapbox-gl.css' rel='stylesheet' />
     <link href='css/style.css'  rel='stylesheet' charset="utf-8"/>
 </head>
 <body>
 
 <div id='map'></div>
-<!-- <ul id="buttons">
-    <li id='button-fr' class='button'>点击</li>
-</ul> -->
 
 <ul id="tags" class="tagbar abs">
 
@@ -61,9 +58,7 @@ for(var i in mapname){
 
 $("button[fnum]").click(function(){
     var mapId=$(this).attr("fnum");
-    console.info(mapId);
     changeMap(mapId);
-    console.info("||"+mapId);
 })
 
 
@@ -86,26 +81,17 @@ var _TIMESTAMP=null;
 $('button[fnum="'+ hnow +'"]').addClass('active');
 
 //轮询请求最新点信息
-function polling(cb,ts){
+function polling(cb){
         $.ajax({
-           type: "GET",
-           url: "backend/infolite.php",
-           success: function(data){
+            type: "GET",
+            url: "backend/infolite.php",
+            success: function(data){
             // Added By Pinckney
-            var arr= JSON.parse(data);
-            for(var i= 0;i<arr.length;i++){
-                let obj=arr[i];
-                // if (y!= arr[i].lat || x != arr[i].lon){
-                	//console.log(x1+"||"+y1);
-                    x1 = x;
-                    y1 = y;
-                    y = arr[i].lat;
-                    x = arr[i].lon;
-                    cb(arr[i].h);
-                // }
-             console.info("x"+arr[i].lat+"||y"+arr[i].lon);
+                var arr= JSON.parse(data);
+                if(typeof(cb)!='string'){
+                    cb(arr);
+                }
             }
-           }
         });
 }
 
@@ -122,22 +108,11 @@ function pointMove(x,y) {
 map.on('load', function () {
     // Add a source and layer displaying a point which will be animated in a circle.
     console.log("on load");
-    map.addSource('point', {
-        "type": "geojson",
-        "data": pointMove(114.35024410486221,30.528976379032812)
-    });
 
-    map.addLayer({
-        "id": "point",
-        "source": "point",
-        "type": "circle",
-        "paint": {
-            "circle-radius": 10,
-            "circle-color": "#007cbf"
-        }
-    });
+    pandlInit();
 
     //用于去除timestamp第二个值随机很大的bug
+    /*
     var flag = 0;
     var timestamptemp = 0;
 
@@ -148,23 +123,101 @@ map.on('load', function () {
         var timestamp = new Date().getTime();
 
 
-
+        //自动切换楼层，多点时去掉
         // if(h!=hnow&&mapinfo[h]!=undefined){
         //     changeMap(h);
         // }
-        if(map.getSource('point')!=undefined){
-            map.getSource('point').setData(pointMove(x,y));            
+
+    }
+    */
+    var timer = setInterval(function(){
+        polling(updatePoints);
+    },1100);//polling interval>1.03s
+
+});
+
+
+function changeMap(n){
+    $("#map").html("");
+    map = new mapboxgl.Map(mapinfo[n]);
+    x=null;
+    y=null;
+    hnow=n;
+    $('button[fnum]').removeClass('active');
+    $('button[fnum="'+ n +'"]').addClass('active');
+}
+
+
+var myjson={
+            "type": "geojson",
+            "data": {
+                "type": "FeatureCollection",
+                "features": [{
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [114.35003,30.5289]
+                    },
+                    "properties": {
+                        "title": "Client 1"
+                    }
+                }, {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [114.3501,30.52902]
+                    },
+                    "properties": {
+                        "title": "Client 2"
+                    }
+                }]
+            }
+        }
+
+var updatePoints=function(arr){
+    if(map.getSource('labels')!=undefined){
+        map.getSource('labels').setData(featureJson(arr).data);            
+    }
+    else{
+        if(map!=undefined){
+            map.addSource('labels', featureJson(arr));
+            map.addLayer({
+                "id": "labels",
+                "type": "symbol",
+                "source": "labels",
+                "layout": {
+                    "text-field": "{title}",
+                    "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+                    "text-offset": [0, 0.6],
+                    "text-anchor": "top"
+                }
+            });                
+        }
+        else{
+            console.warn("Map is not defined")
+        }
+    }
+    for(var i=0;i<arr.length;i++){
+        pandlMove(arr[i]);
+    }
+
+}
+
+var pandlMove=function(obj){
+    if(obj["name"]!=undefined){
+        if(map.getSource('point'+obj["name"])!=undefined){
+            map.getSource('point'+obj["name"]).setData(pointMove(obj['lon'],obj['lat']));            
         }
         else{
             if(map!=undefined){
-                map.addSource('point', {
+                map.addSource('point'+obj["name"], {
                     "type": "geojson",
-                    "data": pointMove(x,y)
+                    "data": pointMove(obj['lon'],obj['lat'])
                 });
 
                 map.addLayer({
-                    "id": "point",
-                    "source": "point",
+                    "id": "point"+obj["name"],
+                    "source": "point"+obj["name"],
                     "type": "circle",
                     "paint": {
                         "circle-radius": 10,
@@ -175,38 +228,80 @@ map.on('load', function () {
             else{
                 console.warn("Map is not defined")
             }
-
         }
-        
+    }
+}
 
-        // Request the next frame of the animation.
-        //requestAnimationFrame(animateMarker);
+var pandlInit=function(){
+    // map.addSource('point', {
+    //     "type": "geojson",
+    //     "data": pointMove(114.35024410486221,30.528976379032812)
+    // });
+
+    // map.addLayer({
+    //     "id": "point",
+    //     "source": "point",
+    //     "type": "circle",
+    //     "paint": {
+    //         "circle-radius": 10,
+    //         "circle-color": "#007cbf"
+    //     }
+    // });
+    pandlMove({"name":1,"temp":1,"lat":30.5289,"lon":114.35003,"h":0})
+    pandlMove({"name":2,"temp":1,"lat":30.52902,"lon":114.3501,"h":0})
+    map.addSource('labels', myjson);
+    map.addLayer({
+        "id": "labels",
+        "type": "symbol",
+        "source": "labels",
+        "layout": {
+            "text-field": "{title}",
+            "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+            "text-offset": [0, 0.6],
+            "text-anchor": "top"
+        }
+    });
+}
+
+var featureJson=function(arr){
+    return {
+            "type": "geojson",
+            "data": {
+                "type": "FeatureCollection",
+                "features": jsonToLabels(arr)
+            }
+        }
+}
+
+var jsonToLabels=function(arr){
+    var tmpJson=myjson.data;
+    var tempFeatures=[];
+    for(var i= 0;i<arr.length;i++){
+        var obj=arr[i];
+        var tmpfObj={
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [0,0]
+            },
+            "properties": {
+                "title": "Client"
+            }
+        }
+        var xyarr=[];
+        xyarr.push(obj.lon);
+        xyarr.push(obj.lat);
+        tmpfObj["geometry"]["coordinates"]=xyarr;
+        tmpfObj["properties"]["title"]="Client"+obj.name+":"+mapname[obj.h];
+        tempFeatures.push(tmpfObj)
 
     }
+    // console.info(tempFeatures);
+    return tempFeatures;
+}
 
-    var timer = setInterval(function(){
-        polling(animateMarker);
-    },1100);//polling interval>1.03s
+var jsonToPoints=function(arr){
 
-});
-
-
-
-
-
-// var changeMap=function(n){
-//     map = new mapboxgl.Map(mapinfo[n]);
-//     x=null;
-//     y=null;
-// }
-function changeMap(n){
-    $("#map").html("");
-    map = new mapboxgl.Map(mapinfo[n]);
-    x=null;
-    y=null;
-    hnow=n;
-    $('button[fnum]').removeClass('active');
-    $('button[fnum="'+ n +'"]').addClass('active');
 }
 </script>
 
