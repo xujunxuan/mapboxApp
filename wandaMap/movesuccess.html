@@ -180,7 +180,7 @@ var updatePoints=function(arr){
     }
     else{
         if(map!=undefined){
-            map.addSource('labels', featureJson);
+            map.addSource('labels', featureJson(arr));
             map.addLayer({
                 "id": "labels",
                 "type": "symbol",
