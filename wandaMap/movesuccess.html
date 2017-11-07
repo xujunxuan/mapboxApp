@@ -81,13 +81,16 @@ var _TIMESTAMP=null;
 $('button[fnum="'+ hnow +'"]').addClass('active');
 
 //轮询请求最新点信息
-function polling(cb,ts){
+function polling(cb){
         $.ajax({
             type: "GET",
             url: "backend/infolite.php",
             success: function(data){
             // Added By Pinckney
                 var arr= JSON.parse(data);
+                if(typeof(cb)!='string'){
+                    cb(arr);
+                }
             }
         });
 }
@@ -128,7 +131,7 @@ map.on('load', function () {
     }
     */
     var timer = setInterval(function(){
-        polling(animateMarker);
+        polling(updatePoints);
     },1100);//polling interval>1.03s
 
 });
@@ -172,6 +175,28 @@ var myjson={
         }
 
 var updatePoints=function(arr){
+    if(map.getSource('labels')!=undefined){
+        map.getSource('labels').setData(featureJson(arr).data);            
+    }
+    else{
+        if(map!=undefined){
+            map.addSource('labels', featureJson);
+            map.addLayer({
+                "id": "labels",
+                "type": "symbol",
+                "source": "labels",
+                "layout": {
+                    "text-field": "{title}",
+                    "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+                    "text-offset": [0, 0.6],
+                    "text-anchor": "top"
+                }
+            });                
+        }
+        else{
+            console.warn("Map is not defined")
+        }
+    }
     for(var i=0;i<arr.length;i++){
         pandlMove(arr[i]);
     }
@@ -192,7 +217,7 @@ var pandlMove=function(obj){
 
                 map.addLayer({
                     "id": "point"+obj["name"],
-                    "source": "point",
+                    "source": "point"+obj["name"],
                     "type": "circle",
                     "paint": {
                         "circle-radius": 10,
@@ -208,21 +233,22 @@ var pandlMove=function(obj){
 }
 
 var pandlInit=function(){
-    map.addSource('point', {
-        "type": "geojson",
-        "data": pointMove(114.35024410486221,30.528976379032812)
-    });
+    // map.addSource('point', {
+    //     "type": "geojson",
+    //     "data": pointMove(114.35024410486221,30.528976379032812)
+    // });
 
-    map.addLayer({
-        "id": "point",
-        "source": "point",
-        "type": "circle",
-        "paint": {
-            "circle-radius": 10,
-            "circle-color": "#007cbf"
-        }
-    });
-
+    // map.addLayer({
+    //     "id": "point",
+    //     "source": "point",
+    //     "type": "circle",
+    //     "paint": {
+    //         "circle-radius": 10,
+    //         "circle-color": "#007cbf"
+    //     }
+    // });
+    pandlMove(114.35024410486221,30.528976379032812);
+    pandlMove((114.35020410486221,30.528876379032812))
     map.addSource('labels', myjson);
     map.addLayer({
         "id": "labels",
@@ -237,13 +263,22 @@ var pandlInit=function(){
     });
 }
 
-var jsonToLabels=function(j){
+var featureJson=function(arr){
+    return {
+            "type": "geojson",
+            "data": {
+                "type": "FeatureCollection",
+                "features": jsonToLabels(arr)
+            }
+        }
+}
+
+var jsonToLabels=function(arr){
     var tmpJson=myjson.data;
-    tmpJson[]
     var tempFeatures=[];
     for(var i= 0;i<arr.length;i++){
-        let obj=arr[i];
-        let tmpfObj={
+        var obj=arr[i];
+        var tmpfObj={
             "type": "Feature",
             "geometry": {
                 "type": "Point",
@@ -253,16 +288,16 @@ var jsonToLabels=function(j){
                 "title": "Client"
             }
         }
-        let xyarr=[];
+        var xyarr=[];
         xyarr.push(obj.lat);
         xyarr.push(obj.lon);
         tmpfObj["geometry"]["coordinates"]=xyarr;
         tmpfObj["properties"]["title"]="Client"+obj.name
-        tempFeatures.push()
-        console.info(obj);
-    }
+        tempFeatures.push(tmpfObj)
 
-    return 
+    }
+    console.info(tempFeatures);
+    return tempFeatures;
 }
 
 var jsonToPoints=function(arr){
