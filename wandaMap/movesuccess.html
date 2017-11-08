@@ -81,13 +81,14 @@ var _TIMESTAMP=null;
 $('button[fnum="'+ hnow +'"]').addClass('active');
 
 //轮询请求最新点信息
-function polling(cb){
+function polling(cb,ts){
         $.ajax({
             type: "GET",
             url: "backend/infolite.php",
             success: function(data){
             // Added By Pinckney
                 var arr= JSON.parse(data);
+                console.info(ts);
                 if(typeof(cb)!='string'){
                     cb(arr);
                 }
@@ -131,7 +132,8 @@ map.on('load', function () {
     }
     */
     var timer = setInterval(function(){
-        polling(updatePoints);
+        let timestamp = new Date().getTime();
+        polling(updatePoints,timestamp);
     },1100);//polling interval>1.03s
 
 });
