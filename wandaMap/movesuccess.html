@@ -94,8 +94,11 @@ function polling(cb,ts){
                         fnumber[i]=0;
                 }
                 for (var i=0;i<arr.length;i++){                    
-                    fnumber[arr[i].name]++;
+                    fnumber[arr[i].name-1]++;//name是从1开始计数的
                 }
+                for(var i in mapname){
+                    $('button[fnum="'+ i +'"]').html(mapname[i]+' 人数：'+fnumber[i]);
+                }                
                 console.info(ts);
                 if(typeof(cb)!='string'){
                     cb(arr);
