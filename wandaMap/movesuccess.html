@@ -53,7 +53,7 @@ mapname[1]="2 F";
 mapname[2]="3 F";
 
 for(var i in mapname){
-    $("#tags").prepend('<li><button type="button" class="btn btn-default" fnum="'+i+'">'+mapname[i]+'</button></li>');
+    $("#tags").prepend('<li><button type="button" class="btn btn-default" fnum="'+i+'">'+mapname[i]+' 人数：0'+'</button></li>');
 }
 
 $("button[fnum]").click(function(){
@@ -77,6 +77,8 @@ var hnow=0;
 var map = new mapboxgl.Map(mapinfo[hnow]);
 //时间戳
 var _TIMESTAMP=null;
+//楼层人数数组
+var fnumber=new Array();
 
 $('button[fnum="'+ hnow +'"]').addClass('active');
 
@@ -88,6 +90,12 @@ function polling(cb,ts){
             success: function(data){
             // Added By Pinckney
                 var arr= JSON.parse(data);
+                for (var i in mapname){
+                        fnumber[i]=0;
+                }
+                for (var i=0;i<arr.length;i++){                    
+                    fnumber[arr[i].name]++;
+                }
                 console.info(ts);
                 if(typeof(cb)!='string'){
                     cb(arr);
@@ -135,6 +143,7 @@ map.on('load', function () {
         let timestamp = new Date().getTime();
         polling(updatePoints,timestamp);
     },1100);//polling interval>1.03s
+
 
 });
 
@@ -217,13 +226,15 @@ var pandlMove=function(obj){
                     "data": pointMove(obj['lon'],obj['lat'])
                 });
 
+                var sscolor=getRandomColor();
+
                 map.addLayer({
                     "id": "point"+obj["name"],
                     "source": "point"+obj["name"],
                     "type": "circle",
                     "paint": {
                         "circle-radius": 10,
-                        "circle-color": "#007cbf"
+                        "circle-color": sscolor
                     }
                 });                
             }
@@ -304,6 +315,14 @@ var jsonToLabels=function(arr){
 
 var jsonToPoints=function(arr){
 
+}
+
+var getRandomColor = function(){ 
+  return  '#' +    
+  (function(color){    
+    return (color +=  '0123456789abcdef'[Math.floor(Math.random()*16)])    
+    && (color.length == 6) ?  color : arguments.callee(color);    
+})('');    
 }
 </script>
 
