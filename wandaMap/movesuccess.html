@@ -8,6 +8,7 @@
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.41.0/mapbox-gl.js' charset=”utf-8″></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.41.0/mapbox-gl.css' rel='stylesheet' />
     <link href='css/style.css'  rel='stylesheet' charset="utf-8"/>
+    <script type="text/javascript" src="js/automove.js" charset="UTF-8"></script>
 </head>
 <body>
 
@@ -18,11 +19,34 @@
 </ul>
 
 <script>
+var _MAPSE='wd';
+var cc=['cj6rj02se4ian2qr0csjn0hnq','cj9lbq3t71hgf2rqfo0bopwey','cj6rj02se4ian2qr0csjn0hnq']
+var wd=['cj9cpr26b5glr2sp83gvzitgz','cj9csxk1p5jvz2spikir9plox','cj9dld9f06b1f2ro3p5f87oli']
+var ccC=[114.35024410486221, 30.528976379032812]
+var wdC=[119.671206, 29.092635]
+var getMap=function(n){
+    switch(_MAPSE){
+        case 'wd':return wd[n];
+        case 'cc':return cc[n];
+        default:
+            console.warn("Map not selected")
+            return cc[n];
+    }
+}
+var getCenter=function(n){
+    switch(_MAPSE){
+        case 'wd':return wdC;
+        case 'cc':return ccC;
+        default:
+            console.warn("Map not selected")
+            return cc[n];
+    }
+}
 var mapinfo={};
 mapinfo[0]={
     container: 'map', // container id
-    style: 'mapbox://styles/ezroad/cj6rj02se4ian2qr0csjn0hnq', // stylesheet location
-    center: [114.35024410486221, 30.528976379032812], // starting position [lng, lat]
+    style: 'mapbox://styles/ezroad/'+getMap(0), // stylesheet location
+    center: getCenter(0), // starting position [lng, lat]
     zoom: 19, // starting zoom
     bearing: -30,
     hash: false,
@@ -30,8 +54,8 @@ mapinfo[0]={
 }
 mapinfo[1]={
     container: 'map', // container id
-    style: 'mapbox://styles/ezroad/cj9lbq3t71hgf2rqfo0bopwey',  // stylesheet location
-    center: [114.35024410486221, 30.528976379032812], // starting position [lng, lat]
+    style: 'mapbox://styles/ezroad/cj9lbq3t71hgf2rqfo0bopwey'+getMap(1),  // stylesheet location
+    center: getCenter(1), // starting position [lng, lat]
     zoom: 19, // starting zoom
     bearing: -30,
     hash: false,
@@ -39,8 +63,8 @@ mapinfo[1]={
 }
 mapinfo[2]={
     container: 'map', // container id
-    style: 'mapbox://styles/ezroad/cj6rj02se4ian2qr0csjn0hnq', // stylesheet location
-    center: [114.35024410486221, 30.528976379032812], // starting position [lng, lat]
+    style: 'mapbox://styles/ezroad/cj6rj02se4ian2qr0csjn0hnq'+getMap(2), // stylesheet location
+    center: getCenter(2), // starting position [lng, lat]
     zoom: 19, // starting zoom
     bearing: -30,
     hash: false,
@@ -79,6 +103,7 @@ var map = new mapboxgl.Map(mapinfo[hnow]);
 var _TIMESTAMP=null;
 //楼层人数数组
 var fnumber=new Array();
+var timer;
 
 $('button[fnum="'+ hnow +'"]').addClass('active');
 
@@ -89,6 +114,9 @@ function polling(cb,ts){
             url: "backend/infolite.php",
             success: function(data){
             // Added By Pinckney
+                console.log(ts<_TIMESTAMP);
+                if(ts<_TIMESTAMP) return "overtime";
+                _TIMESTAMP=ts;
                 var arr= JSON.parse(data);
                 for (var i in mapname){
                         fnumber[i]=0;
@@ -99,7 +127,7 @@ function polling(cb,ts){
                 for(var i in mapname){
                     $('button[fnum="'+ i +'"]').html(mapname[i]+' 人数：'+fnumber[i]);
                 }                
-                console.info(ts);
+                // console.info(ts);
                 if(typeof(cb)!='string'){
                     cb(arr);
                 }
@@ -142,7 +170,7 @@ map.on('load', function () {
 
     }
     */
-    var timer = setInterval(function(){
+    timer = setInterval(function(){
         let timestamp = new Date().getTime();
         polling(updatePoints,timestamp);
     },1100);//polling interval>1.03s
@@ -173,7 +201,7 @@ var myjson={
                         "coordinates": [114.35003,30.5289]
                     },
                     "properties": {
-                        "title": "Client 1"
+                        "title": "消防员 1"
                     }
                 }, {
                     "type": "Feature",
@@ -182,7 +210,7 @@ var myjson={
                         "coordinates": [114.3501,30.52902]
                     },
                     "properties": {
-                        "title": "Client 2"
+                        "title": "消防员 2"
                     }
                 }]
             }
@@ -229,8 +257,9 @@ var pandlMove=function(obj){
                     "data": pointMove(obj['lon'],obj['lat'])
                 });
 
-                var sscolor=getRandomColor();
+                var sscolor=getColor(obj["name"]);
 
+                if (obj['h']!=hnow) sscolor="#dddddd";
                 map.addLayer({
                     "id": "point"+obj["name"],
                     "source": "point"+obj["name"],
@@ -308,7 +337,7 @@ var jsonToLabels=function(arr){
         xyarr.push(obj.lon);
         xyarr.push(obj.lat);
         tmpfObj["geometry"]["coordinates"]=xyarr;
-        tmpfObj["properties"]["title"]="Client"+obj.name+":"+mapname[obj.h];
+        tmpfObj["properties"]["title"]="消防员"+obj.name+":"+mapname[obj.h];
         tempFeatures.push(tmpfObj)
 
     }
@@ -326,6 +355,15 @@ var getRandomColor = function(){
     return (color +=  '0123456789abcdef'[Math.floor(Math.random()*16)])    
     && (color.length == 6) ?  color : arguments.callee(color);    
 })('');    
+}
+
+var _COLOROBJ={};
+
+var getColor=function(name){
+    if (_COLOROBJ[name]==undefined){
+        _COLOROBJ[name]=getRandomColor();
+    }
+    return _COLOROBJ[name];
 }
 </script>
 
