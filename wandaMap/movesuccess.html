@@ -151,25 +151,6 @@ map.on('load', function () {
 
     pandlInit();
 
-    //用于去除timestamp第二个值随机很大的bug
-    /*
-    var flag = 0;
-    var timestamptemp = 0;
-
-
-    function animateMarker(h) {
-        // Update the data to a new position based on the animation timestamp. The
-        // divisor in the expression `timestamp / 1000` controls the animation speed.
-        var timestamp = new Date().getTime();
-
-
-        //自动切换楼层，多点时去掉
-        // if(h!=hnow&&mapinfo[h]!=undefined){
-        //     changeMap(h);
-        // }
-
-    }
-    */
     timer = setInterval(function(){
         let timestamp = new Date().getTime();
         polling(updatePoints,timestamp);
