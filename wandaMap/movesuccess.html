@@ -9,6 +9,7 @@
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.41.0/mapbox-gl.css' rel='stylesheet' />
     <link href='css/style.css'  rel='stylesheet' charset="utf-8"/>
     <script type="text/javascript" src="js/automove.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="js/sidebar.js" charset="UTF-8"></script>
 </head>
 <body>
 
@@ -17,14 +18,25 @@
 <ul id="tags" class="tagbar abs">
 
 </ul>
-<div class="side-bar">
+<div id="side-bar" class="side-bar">
     <div class="holder">
         <div class="side-btn">
             <img class="side-icon" src="img/menu.svg"/>
         </div>
+        <section class="model-4">
+            <div class="label">离线功能</div>
+            <div class="checkbox">
+                <input id="offline" type="checkbox"/>
+                <label></label>
+            </div>
+        </section>
+        <div style="clear:both;"></div>
+        <div id="u-list">
+        </div>
     </div>
 </div>
 <script>
+var _DATA=[];
 var _MAPSE='wd';
 var cc=['cj6rj02se4ian2qr0csjn0hnq','cj9lbq3t71hgf2rqfo0bopwey','cj6rj02se4ian2qr0csjn0hnq']
 var wd=['cj9cpr26b5glr2sp83gvzitgz','cj9csxk1p5jvz2spikir9plox','cj9dld9f06b1f2ro3p5f87oli']
@@ -124,6 +136,7 @@ function polling(cb,ts){
                 if(ts<_TIMESTAMP) return "overtime";
                 _TIMESTAMP=ts;
                 var arr= JSON.parse(data);
+                _DATA=arr;
                 for (var i in mapname){
                         fnumber[i]=0;
                 }
@@ -352,6 +365,18 @@ var getColor=function(name){
     }
     return _COLOROBJ[name];
 }
+
+$(function(){
+    sidebar.init();
+    $('#offline').click(function(){
+        var ck=$('#offline').prop("checked");
+        if(ck==true){
+            automove.restart();
+        }else{
+            automove.stop();
+        }
+    })
+})
 </script>
 
 </body>
