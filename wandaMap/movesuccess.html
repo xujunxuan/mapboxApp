@@ -17,7 +17,13 @@
 <ul id="tags" class="tagbar abs">
 
 </ul>
-
+<div class="side-bar">
+    <div class="holder">
+        <div class="side-btn">
+            <img class="side-icon" src="img/menu.svg"/>
+        </div>
+    </div>
+</div>
 <script>
 var _MAPSE='wd';
 var cc=['cj6rj02se4ian2qr0csjn0hnq','cj9lbq3t71hgf2rqfo0bopwey','cj6rj02se4ian2qr0csjn0hnq']
@@ -54,7 +60,7 @@ mapinfo[0]={
 }
 mapinfo[1]={
     container: 'map', // container id
-    style: 'mapbox://styles/ezroad/cj9lbq3t71hgf2rqfo0bopwey'+getMap(1),  // stylesheet location
+    style: 'mapbox://styles/ezroad/'+getMap(1),  // stylesheet location
     center: getCenter(1), // starting position [lng, lat]
     zoom: 19, // starting zoom
     bearing: -30,
@@ -63,7 +69,7 @@ mapinfo[1]={
 }
 mapinfo[2]={
     container: 'map', // container id
-    style: 'mapbox://styles/ezroad/cj6rj02se4ian2qr0csjn0hnq'+getMap(2), // stylesheet location
+    style: 'mapbox://styles/ezroad/'+getMap(2), // stylesheet location
     center: getCenter(2), // starting position [lng, lat]
     zoom: 19, // starting zoom
     bearing: -30,
@@ -240,7 +246,7 @@ var pandlMove=function(obj){
 
                 var sscolor=getColor(obj["name"]);
 
-                if (obj['h']!=hnow) sscolor="#dddddd";
+                if (obj['h']!=hnow) {sscolor="#dddddd"};
                 map.addLayer({
                     "id": "point"+obj["name"],
                     "source": "point"+obj["name"],

@@ -26,7 +26,12 @@ ul,li{
     }
 }         
 
-
+.holder{
+    display:block;
+    position:relative;
+    width:100%;
+    height:100%;
+}
 
 .btn {
     display: inline-block;
@@ -60,4 +65,73 @@ ul,li{
     background-color:#007cbf;
     color:#fff;
     border-color:#006caf;
+}
+
+.side-bar{
+    position:fixed;
+    display:block;
+
+    top:0;
+    left:-240px;
+    background-color:rgba(0,0,0,0.8);
+    z-index:1000;
+
+    height:100%;
+    width:240px;
+
+    transition:all .6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    -o-transition:all .6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    -webkit-transition:all .6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+.side-bar.on{
+    left:0px;
+}
+
+.side-btn{
+    position:absolute;
+    display:block;
+
+    top:0;
+    left:100%;
+    background-color:rgba(0,0,0,0.8);
+    z-index:1000;
+
+    height:36px;
+    width:36px;
+
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+@media (max-width: 720px) {  
+    .side-bar{
+        left:-50%;
+        width:50%;
+    }
+    .side-btn{
+        position:absolute;
+        display:block;
+
+        top:0;
+        left:100%;
+        background-color:rgba(0,0,0,0.8);
+        z-index:1000;
+
+        height:36px;
+        width:36px;
+
+        border-top-right-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
+    .side-bar.on{
+        left:0px;
+    }
+}         
+
+.side-icon{
+    width:22px;
+    height:22px;
+
+    margin:7px;
+    opacity:0.8;
 }
